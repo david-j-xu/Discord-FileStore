@@ -1,0 +1,59 @@
+==================================
+=       Discord FileStore        =
+==================================
+
+
+Three channels:
+
+Bootstrap:
+  - static message containing inode location (message id) for root directory
+
+inodes:
+- implemented as a pickled file
+  Two types:
+    - directory inodes
+      - file counter
+      - stores 2048 blocks for files (2048 files per directory)
+      - stores 2048 blocks for directories (2048 children)
+
+    - file inodes
+      - stores filename
+      - stores file size
+      - block counter
+      - stores message ids for the first 2048 blocks (2048 * 5 MB = ~5 GB)
+      - indirect blocks?
+      - stores message id of inode of parent directory
+
+files:
+  Stores file data, each of 5 MB blocks
+
+===== Overview =======
+ - OS agnostic filestore
+ - should be run on a local machine in order to do local machine downloads and such, but all the data should be stored online
+ - anyone using this should be able to run from their computer and be immediately bootstrapped into the filesystem
+
+==== User API =======
+Local machine instructions:
+  - ls -> sees the ENTIRE filetree
+  - inspect -> sees files in the current directory
+  - cd 
+  - pwd
+  - mkdir
+  - up [path] - uploads a file to a path
+  - dl [file] - downloads a file in the current directory
+
+discord instructions:
+  - ls -> sees entire filetree
+  - cd
+  - pwd
+  - mkdir
+  - touch -> creates an empty file in the current directory
+
+
+==== Implementation ====
+upon loading, load all directory inodes into memory for ls purposes
+
+1. Create bootstrapping
+2. create the file upload mechanic
+3. create file download mechanic
+4. create directories
