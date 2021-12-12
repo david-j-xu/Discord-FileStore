@@ -14,8 +14,8 @@ class FileSystem:
 
     def __checkFilePath(self, name: str):
         # make sure / is not in the path for clarity
-        if "/" in name:
-            raise ValueError("Directory name may not contain /")
+        if "/" in name or ".." in name:
+            raise ValueError("Directory name may not contain / or ..")
 
         # make sure a directory or file does not already exist with this name
         for file in self.pwd.getFiles():
@@ -74,19 +74,12 @@ class FileSystem:
 
 if __name__ == "__main__":
     fs = FileSystem()
-
-    # print(fs.get_pwd())
-
+    print(fs.get_pwd())
     fs.mkdir("usr")
     fs.mkdir("bin")
     fs.touch("thingy")
-
-    # print(fs.ls())
-
+    print(fs.ls())
     fs.cd("usr")
-    # print(fs.get_pwd())
-    # print(fs.ls())
+    print(fs.get_pwd())
     fs.touch("other thingy")
-    # print(fs.ls())
-
     print(fs.list_all_files())
