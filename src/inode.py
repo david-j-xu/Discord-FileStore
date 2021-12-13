@@ -17,7 +17,6 @@ class INode:
         self.num_blocks: int = 0
         self._files: List[INode] = []
         self._blocks: List[INode] = []
-        self.indirect: List[str] = []  # message ids for additional files
 
     def isDirectory(self) -> bool:
         return self.type == INodeType.DIRECTORY
@@ -43,3 +42,7 @@ class INode:
 
     def getNumBlocks(self) -> int:
         return self.num_blocks
+
+    def addBlock(self, block):
+        self._blocks.append(block)
+        self.num_blocks += 1

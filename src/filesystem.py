@@ -12,6 +12,11 @@ class FileSystem:
             result += file.getName() + "\n"
         return result
 
+    def rm(self, name: str):
+        for file in self.pwd.getFiles():
+            if file.getName() == name:
+                self.pwd.getFiles().remove(file)
+
     def __checkFilePath(self, name: str):
         # make sure / is not in the path for clarity
         if "/" in name or ".." in name:
@@ -22,13 +27,14 @@ class FileSystem:
             if file.getName() == name:
                 raise ValueError("File/Folder with this name already exists")
 
-    def touch(self, name: str):
+    def touch(self, name: str) -> INode:
         self.__checkFilePath(name)
 
         child = INode(name,
                       self.pwd.getPath() + self.pwd.getName() + "/", False,
                       self.pwd)
         self.pwd.addFile(child)
+        return child
 
     def mkdir(self, name: str):
         self.__checkFilePath(name)
@@ -65,11 +71,10 @@ class FileSystem:
             if directory.isDirectory():
                 self.__dfs_files(directory, result)
 
-    def upload(self, path, name):
-        pass
-
-    def download(self, path, name):
-        pass
+    def get_file(self, name: str) -> INode:
+        for file in self.pwd.getFiles():
+            if file.getName() == name:
+                return file
 
 
 if __name__ == "__main__":
@@ -82,4 +87,6 @@ if __name__ == "__main__":
     fs.cd("usr")
     print(fs.get_pwd())
     fs.touch("other thingy")
+    print(fs.list_all_files())
+    fs.rm("other thingy")
     print(fs.list_all_files())
