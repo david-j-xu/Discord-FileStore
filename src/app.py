@@ -36,29 +36,48 @@ def main():
 
     @bot.command(name='pwd', help="Prints the current working directory")
     async def b_pwd(ctx):
-        pass
+        if fs:
+            await ctx.send(fs.get_pwd())
+        else:
+            ctx.send("No filesystem was found")
 
     @bot.command(name='ls',
                  help="Prints files and directories in the current directory")
     async def b_ls(ctx):
-        pass
+        if fs:
+            await ctx.send(fs.ls())
+        else:
+            ctx.send("No filesystem was found")
 
     @bot.command(name='rm',
                  help="Deletes a file or folder in the current directory")
-    async def b_rm(ctx):
-        pass
+    async def b_rm(ctx, arg):
+        if fs:
+            await ctx.send(fs.rm(arg))
+        else:
+            ctx.send("No filesystem was found")
 
     @bot.command(name='du', help="Lists all the files in the filesystem")
     async def b_du(ctx):
-        pass
+        if fs:
+            await ctx.send(fs.list_all_files())
+        else:
+            ctx.send("No filesystem was found")
 
     @bot.command(name='cd', help="Changes directory")
-    async def b_cd(ctx):
-        pass
+    async def b_cd(ctx, arg):
+        if fs:
+            fs.cd(arg)
+            await ctx.send(f"New pwd: {fs.get_pwd()}")
+        else:
+            ctx.send("No filesystem was found")
 
     @bot.command(name='mkdir', help="Makes a directory")
-    async def b_mkdir(ctx):
-        pass
+    async def b_mkdir(ctx, arg):
+        if fs:
+            ctx.send(fs.mkdir(arg))
+        else:
+            ctx.send("No filesystem was found")
 
     @bot.command(name='upload', help="Creates a file")
     async def b_upload(ctx):

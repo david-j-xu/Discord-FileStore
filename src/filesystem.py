@@ -16,19 +16,26 @@ class FileSystem:
         for file in self.pwd.getFiles():
             if file.getName() == name:
                 self.pwd.getFiles().remove(file)
+                return "Successful"
+        return "Unsuccessful"
 
     def __checkFilePath(self, name: str):
         # make sure / is not in the path for clarity
         if "/" in name or ".." in name:
-            raise ValueError("Directory name may not contain / or ..")
+            return "Directory name may not contain / or .."
 
         # make sure a directory or file does not already exist with this name
         for file in self.pwd.getFiles():
             if file.getName() == name:
-                raise ValueError("File/Folder with this name already exists")
+                return "File/Folder with this name already exists"
+
+        return "Successful"
 
     def touch(self, name: str) -> INode:
-        self.__checkFilePath(name)
+        status = self.__checkFilePath(name)
+
+        if status != "Successful":
+            return None
 
         child = INode(name,
                       self.pwd.getPath() + self.pwd.getName() + "/", False,
@@ -37,12 +44,16 @@ class FileSystem:
         return child
 
     def mkdir(self, name: str):
-        self.__checkFilePath(name)
+        status = self.__checkFilePath(name)
+
+        if status != "Successful":
+            return status
 
         child = INode(name,
                       self.pwd.getPath() + self.pwd.getName() + "/", True,
                       self.pwd)
         self.pwd.addFile(child)
+        return status
 
     def get_pwd(self) -> str:
         return self.pwd.getPath() + self.pwd.getName() + "/"
