@@ -42,7 +42,7 @@ LOCAL_INODES_PATH=PATH_TO_LOCALLY_STORE_INODES
   - `help`:     Shows this message
   - `ls` :      Prints files and directories in the current directory
   - `mkdir`:    Makes a directory
-  - `mount`:    Mounts the current filesystem, or creates one if it does not exist
+  - `mount`:    Mounts the current filesystem
   - `pwd`:      Prints the current working directory
   - `rm` :      Deletes a file or folder in the current directory
   - `unmount`:  Unmounts the currently mounted filesystem
