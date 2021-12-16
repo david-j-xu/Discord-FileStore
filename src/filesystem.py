@@ -92,7 +92,7 @@ if __name__ == "__main__":
     fs = FileSystem()
     print(fs.get_pwd())
     fs.mkdir("usr")
-    fs.mkdir("bin")
+    print(fs.mkdir("bin"))
     fs.touch("thingy")
     print(fs.ls())
     fs.cd("usr")
