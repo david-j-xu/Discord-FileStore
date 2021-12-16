@@ -34,7 +34,12 @@ def main():
     LOCAL_INODES_PATH = os.getenv('LOCAL_INODES_PATH')
     LOCAL_DOWNLOAD_PATH = os.getenv('LOCAL_DOWNLOAD_PATH')
 
-    bot = commands.Bot(command_prefix=':! ', intents=intents)
+    help_command = commands.DefaultHelpCommand(
+        no_category='Commands'
+    )
+
+    bot = commands.Bot(command_prefix=':! ',
+                       help_command=help_command, intents=intents)
 
     @bot.event
     async def on_ready():
@@ -148,7 +153,8 @@ def main():
     async def b_ls(ctx):
         if fs:
             logging.info(f"ls called")
-            await ctx.send(f"Files in the current directory: \n```{fs.ls()}\n```")
+            print(fs.ls())
+            await ctx.send("Files in the current directory: \n```{}\n```".format('\t'.join(fs.ls())))
         else:
             logging.info(f"No filesystem found at command time for ls")
             await ctx.send("No filesystem was found")
@@ -167,7 +173,7 @@ def main():
     async def b_du(ctx):
         if fs:
             logging.info(f"du called")
-            await ctx.send(f'All files: \n```{fs.list_all_files()}\n```')
+            await ctx.send('All files: \n```{}\n```'.format('\t'.join(fs.list_all_files())))
         else:
             logging.info(f"No filesystem found at command time for du")
             await ctx.send("No filesystem was found")
@@ -200,7 +206,13 @@ def main():
             return
         # create a block creator for a file
         path = '/'.join([LOCAL_UPLOAD_PATH, arg])
-        splitter = Splitter(path)
+        try:
+            splitter = Splitter(path)
+        except Exception as e:
+            await ctx.send("Error loading file")
+            print(e)
+            logging.info(f"File {path} was not found")
+            return
         curr = splitter.get_next_block()
 
         # only create a file if it's nonempty, else return
@@ -211,13 +223,18 @@ def main():
 
         # file exists, create an inode, place in the current directory
         inode = fs.touch(arg)
-
+        await ctx.send(f"Commencing upload of {path} to filesystem")
         while curr:
-            file = BytesIO(curr)
-            message = await files_channel.send(f"{arg} block {inode.num_blocks}", file=discord.File(file))
-            inode.addBlock(message.id)
-            logging.info(f"Added block {message.id} to file {arg}")
-            curr = splitter.get_next_block()
+            try:
+                file = BytesIO(curr)
+                message = await files_channel.send(f"{arg} block {inode.num_blocks}", file=discord.File(file))
+                inode.addBlock(message.id)
+                logging.info(f"Added block {message.id} to file {arg}")
+                curr = splitter.get_next_block()
+            except Exception as e:
+                await ctx.send(f"File upload failed. Does the file already exist?")
+                logging.error(f"{e}")
+                break
 
         splitter.destruct()
         logging.info(f"Successfully uploaded file {path} to {arg}")
@@ -242,6 +259,7 @@ def main():
             await ctx.send("File not found, failing download")
             return
 
+        await ctx.send(f"Commencing download of {arg} to {path}")
         # find blocks and write
         for (idx, message_id) in enumerate(inode.getBlocks()):
             message = await files_channel.fetch_message(message_id)

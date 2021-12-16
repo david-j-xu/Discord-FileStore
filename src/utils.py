@@ -1,10 +1,11 @@
-BLOCK_SIZE = 10
+BLOCK_SIZE = 7000000
 
 
 class Splitter:
     '''
     Splits a file into blocks
     '''
+
     def __init__(self, path: str) -> None:
         try:
             self._file = open(path, "rb")
@@ -26,6 +27,7 @@ class Joiner:
     '''
     Joins a file given blocks
     '''
+
     def __init__(self, path: str) -> None:
         try:
             self._file = open(path, "wb")

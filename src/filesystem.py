@@ -1,3 +1,4 @@
+
 from inode import INode
 
 
@@ -8,9 +9,9 @@ class FileSystem:
         self.pwd = self.root
 
     def ls(self) -> str:
-        result = ""
+        result = []
         for file in self.pwd.getFiles():
-            result += file.getName() + "\n"
+            result.append(file.getName())
         return result
 
     def rm(self, name: str):
@@ -75,7 +76,7 @@ class FileSystem:
     def list_all_files(self) -> str:
         result = []
         self.__dfs_files(self.root, result)
-        return "\n".join(result)
+        return result
 
     def __dfs_files(self, curr: INode, result) -> str:
         for file in curr.getFiles():
