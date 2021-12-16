@@ -4,6 +4,7 @@ from inode import INode
 class FileSystem:
     def __init__(self) -> None:
         self.root = INode("", "", True)
+        self.inodes = [self.root]
         self.pwd = self.root
 
     def ls(self) -> str:
@@ -16,6 +17,7 @@ class FileSystem:
         for file in self.pwd.getFiles():
             if file.getName() == name:
                 self.pwd.getFiles().remove(file)
+                self.inodes.remove(file)
                 return "Successful"
         return "Unsuccessful"
 
@@ -41,6 +43,7 @@ class FileSystem:
                       self.pwd.getPath() + self.pwd.getName() + "/", False,
                       self.pwd)
         self.pwd.addFile(child)
+        self.inodes.append(child)
         return child
 
     def mkdir(self, name: str):
@@ -53,6 +56,7 @@ class FileSystem:
                       self.pwd.getPath() + self.pwd.getName() + "/", True,
                       self.pwd)
         self.pwd.addFile(child)
+        self.inodes.append(child)
         return status
 
     def get_pwd(self) -> str:
