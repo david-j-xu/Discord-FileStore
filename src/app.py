@@ -81,7 +81,7 @@ def main():
 
     @bot.command(
         name='mount',
-        help="Mounts the current filesystem, or creates one if it does not exist"
+        help="Mounts the current filesystem, if it exists"
     )
     async def b_mount(ctx):
         # find channels
