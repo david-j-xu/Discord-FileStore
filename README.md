@@ -53,3 +53,5 @@ LOCAL_INODES_PATH=PATH_TO_LOCALLY_STORE_INODES
 As of right now, we have a theoretical limit on the number of files by the size of the pickled filesystem. The filesystem pickle file grows as the size of the filesystem itself, and when this hits 8MB, the filesystem will no longer be able to be cached on discord itself.
 
 -  This can likely be fixed by adding a bootstrapping component, where we have a separate inode that points to all the inode blocks, and reconstructing from there. I don't see this being a large problem, though, so I didn't add this. In theory, we could exponentially increase the capacity of our filesystem with higher depths of indirectly storing the inode structure, but I don't see even one layer being necessary.
+
+- Additionally, there are definitely security vulnerabilities due to the pickling operation I chose to use, so be careful what servers you use this on.
